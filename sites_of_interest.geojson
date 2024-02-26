@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "site": "Kinglsey_Vale" }, "geometry": { "type": "Point", "coordinates": [ -0.836287, 50.892661 ] } },
+{ "type": "Feature", "properties": { "site": "Langley_Wood" }, "geometry": { "type": "Point", "coordinates": [ -1.672291, 50.986669 ] } },
+{ "type": "Feature", "properties": { "site": "Stodmarsh" }, "geometry": { "type": "Point", "coordinates": [ 1.19801, 51.319204 ] } },
+{ "type": "Feature", "properties": { "site": "Cotsowld_Commons_and_Beechwoods" }, "geometry": { "type": "Point", "coordinates": [ -2.140592, 51.799764 ] } },
+{ "type": "Feature", "properties": { "site": "Somerset_Wetlands" }, "geometry": { "type": "Point", "coordinates": [ -2.812209, 51.162372 ] } }
+]
+}
