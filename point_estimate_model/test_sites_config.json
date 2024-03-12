@@ -1,0 +1,7 @@
+{
+    "sites_of_interest": {
+        "x_y_path": "./data/counter_locations/unseen_sites.gpkg",
+        "strava_path": "./data/strava_data/sites_of_interest/",
+        "cut_off_year": 2020
+    }
+}
