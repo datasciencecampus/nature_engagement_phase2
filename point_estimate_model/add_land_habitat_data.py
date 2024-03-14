@@ -25,10 +25,10 @@ def read_shapefiles(data_loc):
 
 def process_habitat_data():
     """Process habitat classification data."""
-    #   data_loc = data_folder+'NE_LivingEnglandHabitatMapPhase4_SHP_Full/'
+    data_loc = data_folder+'NE_LivingEnglandHabitatMapPhase4_SHP_Full/'
 
-    #   habitat_df = pd.concat(read_shapefiles(data_loc)).reset_index(drop=True)
-    #   habitat_df.to_pickle('data/ne_living_habitat.pkl')
+    habitat_df = pd.concat(read_shapefiles(data_loc)).reset_index(drop=True)
+    habitat_df.to_pickle('data/ne_living_habitat.pkl')
 
     habitat_df = pd.read_pickle(data_loc_ne_habitat)
 
