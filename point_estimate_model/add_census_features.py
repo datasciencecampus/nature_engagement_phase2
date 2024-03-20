@@ -5,8 +5,6 @@ from model_packages import *
 from model_utils import *
 
 # Constants
-census_locn_file_data
-data_folder
 counter_info= gpd.read_file(data_folder+'counter_locations/counter_locations_processed.gpkg')
 
 household_occupancy_ftrs=['1-2 people in household','3+ people in household']

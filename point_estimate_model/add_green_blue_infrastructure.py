@@ -62,43 +62,6 @@ def add_to_static_data(df):
     static= pd.merge(df, static, on='counter', how='inner')
     static.to_pickle(data_folder+'static_data.pkl')
 
-def process_test_sites_data():
-    sites_df= gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg')
-    sites_df= sites_df[['counter', 'geometry', 'provider', 'geom_type']].reset_index(drop=True)
-    sites_df= sites_df.to_crs(crs_mtr)
-
-    # Overlay data onto counter locations
-
-    # green area
-    green_overlay = overlay_with_buffers(gpd.read_file(data_folder+'infrastructure_green.gpkg'), sites_df, False)
-    # rename variable and adjust units
-    green_overlay['accessible_green_space_area']=green_overlay['area']/(10**6)
-    
-    # PRoW- this has to be processed differently to the other variables
-    prow_lengths= gpd.read_file(data_folder+'infrastructure_prow.gpkg') 
-    prow_overlay = prow_lengths.to_crs(crs_mtr).overlay(sites_df,how='intersection')
-    prow_overlay= prow_overlay.groupby('counter')['PROW_Total_length_m'].sum().reset_index()
-    prow_overlay= prow_overlay[['counter', 'PROW_Total_length_m']]
-    # rename variable and adjust units
-    prow_overlay['PROW_Total_length_km']=prow_overlay['PROW_Total_length_m']/(10**3)
-
-    # waterside
-    waterside_overlay = overlay_with_buffers(gpd.read_file(data_folder+'infrastructure_waterside.gpkg'), sites_df, True)
-    # rename variable and adjust units
-    waterside_overlay['waterside_length_km']=waterside_overlay['length']/(10**3)
-
-    # Combine all features to a single data frame
-    features = reduce(lambda df1,df2: pd.merge(df1,df2, on='counter'), [green_overlay, prow_overlay, waterside_overlay])
-    features= features[['counter','accessible_green_space_area', 'PROW_Total_length_km', 'waterside_length_km']]
-    
-    # add new variables to static data set
-    static= pd.read_pickle(data_folder + 'test_sites_static_data.pkl')
-    static= pd.merge(features, static, on='counter', how='inner')
-    static.to_pickle(data_folder+'test_sites_static_data.pkl')
-
-
-    
-
 def main():
 
     # load sites_df

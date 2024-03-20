@@ -97,31 +97,6 @@ def add_to_static_data(df):
     static= pd.merge(df, static, on='counter')
     static.to_pickle(data_folder+'static_data.pkl')
 
-def process_test_sites_data():
-    
-    habitat_df = process_habitat_data()
-
-    #load counter locations _data
-    locations_buffer_ts = gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg').to_crs(crs_mtr)
-
-    sites_df = get_site_buffers(locations_buffer_ts)
-
-    sites_habitat_df = intersect_with_habitat(sites_df, habitat_df)
-
-    sites_df_habitat_cover_pv = calculate_habitat_areas(sites_habitat_df, locations_buffer_ts)
-
-    coordinates = sites_df_habitat_cover_pv.select_dtypes(include=np.number).values
-
-    labels = get_cluster_labels(coordinates)
-
-    sites_df_habitat_cover_pv= assign_labels(sites_df_habitat_cover_pv, labels)
-    
-    # add new variables to static data set
-    static= pd.read_pickle(data_folder + 'test_sites_static_data.pkl')
-    static= pd.merge(sites_df_habitat_cover_pv[['counter','land_habitat_labels']], static, on='counter', how='inner')
-    static.to_pickle(data_folder+'test_sites_static_data.pkl')
-
-
 def main():
     
     habitat_df = process_habitat_data()

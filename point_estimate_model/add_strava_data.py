@@ -92,20 +92,6 @@ def merge_strava_counter(provider, df):
     
     return merged
 
-def process_test_sites_data(provider, strava_data_loc):
-    # counter_info_loc= counter_info_loc.strip("'")
-    counters= gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg')
-    loc_names= counters.counter
-    clean_folder_names(strava_data_loc, remove_suffix)
-    # process strava data
-    strava_count = prepare_strava(loc_names, strava_data_loc)
-    strava_count.head()
-    merged= strava_count[['total_trip_count', 'Date', 'site']].merge(counters, how='inner',left_on=['site'],\
-                                            right_on=['counter'])
-    merged.to_pickle(data_folder+f'test_sites/strava_data_{provider}.pkl')
-
-
-
 
 
 def main(provider, data_loc):

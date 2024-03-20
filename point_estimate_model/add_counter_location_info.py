@@ -11,8 +11,8 @@ from model_utils import *
 # config JSON fil with all the input data sets and providers. Data files are saved as gpkg with CRS already identified
 config_file = './scripts/config.json' 
 # input datasets log file to document if and when processing has occurred
-input_datasets_log= f'{data_folder}input_datasets_log.csv'
-input_datasets = pd.read_csv(input_datasets_log)
+# input_datasets_log= f'{data_folder}input_datasets_log.csv'
+# input_datasets = pd.read_csv(input_datasets_log)
 # absolute value to alter coordinates by in anonymise function
 rand_shift = 5000 
 
@@ -203,36 +203,6 @@ def update_log(provider):
 
 #   return  processed_df, anonymised_df
 
-def process_test_sites_data(config_file_path):
-  file_dict=get_config_file_paths(config_file_path)
-  data= load_counter_data_test_sites(file_dict)
-
-  combined_df = []
-  combined_anonymised_df=[]
-
-  for provider, df in data.items():
-      # Process each source data
-      
-      df = assign_locations(df)  
-      combined_df.append(df)
-      anonymised_df= anonymise_data(df, rand_shift)
-      combined_anonymised_df.append(anonymised_df)
-      
-    
-  processed_df = pd.concat(combined_df, ignore_index=True)
-  # keep only relevant columns
-  processed_df= processed_df[['counter', 'lat', 'lon', 'geometry', 'provider', 'area','geom_type']]
-  processed_df=processed_df.to_crs('EPSG:4326')
-  processed_df.to_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg', crs= 'EPSG:4326')
-
-  anonymised_df = pd.concat(combined_anonymised_df, ignore_index=True)
-  # keep only relevant columns
-  anonymised_df= anonymised_df[['counter', 'lat', 'lon', 'geometry', 'provider', 'area','geom_type']]
-  anonymised_df=anonymised_df.to_crs('EPSG:4326')
-  anonymised_df.to_file(data_folder+'counter_locations/test_sites_counter_locations_anonymised_processed.gpkg',crs= 'EPSG:4326' )
-
-
-
 
 def main():
 
@@ -270,9 +240,9 @@ def main():
     anonymised_df.to_file(data_folder+'counter_locations/counter_locations_anonymised_processed.gpkg',crs= 'EPSG:4326' )
 
 
-    # update log for data that has been processed
-    for provider in processed_df.provider:
-      update_log(provider)
+    # # update log for data that has been processed
+    # for provider in processed_df.provider:
+    #   update_log(provider)
 
 
       # visualize_data(processed_df)

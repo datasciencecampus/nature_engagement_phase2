@@ -72,43 +72,6 @@ def add_to_static_data(df):
     static= pd.merge(df, static, on='counter')
     static.to_pickle(data_folder+'static_data.pkl')
 
-def process_test_sites_data():
-  # load rural/urban features from raw census data
-  dataset = pd.read_pickle(data_folder+'test_sites_raw_census_features_with_counter_info.pkl')
-  dataset = dataset.groupby(['counter', 'urban_rural'])['area_sq_km'].sum().reset_index()
-
-  locations_buffer = gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg').to_crs(crs_deg)
-  sites_profile = locations_buffer[['counter','geometry']].merge(dataset, on=['counter'], how='inner')
-  sites_profile['geometry'] = sites_profile['geometry'].centroid
-  sites_profile = sites_profile[['counter','geometry','urban_rural','area_sq_km']]
-
-  # create coordinates for clustering and format df containing rural/urban features 
-  sites_profile_pv = sites_profile.pivot_table('area_sq_km', ['counter'], 'urban_rural')
-  sites_profile_pv.reset_index(drop=False, inplace=True)
-
-
-  colm_nams = sites_profile_pv.columns
-  sites_profile_pv = sites_profile_pv.reindex(colm_nams, axis=1).fillna(0)
-  sites_profile_pv = sites_profile_pv.rename_axis(None, axis=1)
-
-
-  sites_profile = sites_profile_pv.copy()
-  sites_profile = locations_buffer[['counter','geometry']].merge(sites_profile, on=['counter'], how='inner')
-  sites_profile['geometry'] = sites_profile['geometry'].centroid
-
-
-  coordinates = sites_profile.select_dtypes(include=np.number).values
-
-  # perform clustering to assign labels
-  labels = cluster(coordinates)
-
-  # use label mapping to give meaning to clustering assigned lables
-  sites_profile = assign_labels(sites_profile, labels)
-
-  # add new variables to static data set
-  static= pd.read_pickle(data_folder + 'test_sites_static_data.pkl')
-  static= pd.merge(sites_profile[['counter','land_type_labels']], static, on='counter', how='inner')
-  static.to_pickle(data_folder+'test_sites_static_data.pkl')
 
 def main():
   

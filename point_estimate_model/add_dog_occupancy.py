@@ -58,37 +58,6 @@ def add_to_static_data(df):
     static= pd.merge(df, static, on='counter', how='inner')
     static.to_pickle(data_folder+'static_data.pkl')
 
-def process_test_sites_data():
-  # load PNAS curvey data
-  df = load_survey_data()
-
-  world = gpd.read_file(world_boundaries)
-  uk = world[world.name == 'U.K. of Great Britain and Northern Ireland']
-
-  
-  # load counter locations _data
-  sites_df = gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg').to_crs(crs_mtr)
-  sites = sites_df.overlay(uk.to_crs(crs_mtr), how='intersection')
-
-  gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.Visit_Longitude, df.Visit_Latitude)).set_crs(crs_deg)
-  gdf = gdf.to_crs(crs_mtr)
-
-  intersect_df = gdf.sjoin(sites, how="left", op='intersects').dropna(subset=['counter'])
-  intersect_df = intersect_df.to_crs(crs_deg)
-
-  # get mean dog occupancy for each site
-  
-  intersect_df['Dog'] = intersect_df['Dog'].eq('Yes').mul(1)
-
-  dog_occupancy = intersect_df.groupby('counter')[['No_Of_Visits', 'Dog']].mean().reset_index()
-  dog_occupancy = sites_df[['counter','geometry']].merge(dog_occupancy, on=['counter'])
-  dog_occupancy['geometry'] = dog_occupancy['geometry'].centroid
-
-  # add new variables to static data set
-  static= pd.read_pickle(data_folder + 'test_sites_static_data.pkl')
-  static= pd.merge(dog_occupancy[['counter', 'Dog']], static, on='counter', how='inner')
-  static.to_pickle(data_folder+'test_sites_static_data.pkl')
-
 
 def main():
 

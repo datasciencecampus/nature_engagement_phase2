@@ -58,17 +58,6 @@ def add_to_static_data(df):
     static= pd.merge(df, static, on='counter')
     static.to_pickle(data_folder+'static_data.pkl')
 
-def process_test_sites_data():
-  site_locations=gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg')
-  
-  # Get weather data
-  weather_df = get_weather_data(site_locations)  
-  # Clean data
-  weather_df = clean_weather_data(weather_df)
-  # Save cleaned data
-  weather_df.to_pickle(data_folder+'test_sites_weather_data.pkl')
-
-
 def main():
   """Main process to load, process, and save weather data."""
 

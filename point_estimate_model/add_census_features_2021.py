@@ -5,8 +5,7 @@ from model_packages import *
 from model_utils import *
 
 # Constants
-census_locn_file_data
-data_folder
+
 counter_info= gpd.read_file(data_folder+'counter_locations/counter_locations_processed.gpkg')
 
 household_occupancy_ftrs=['1-2 people in household','3+ people in household']
@@ -199,45 +198,6 @@ def merge_with_static(df):
     static= pd.read_pickle(data_folder + 'static_data.pkl')
     static= pd.merge(df, static, on='counter', how='inner')
     static.to_pickle(data_folder+'static_data.pkl')
-
-def process_test_sites_data():
-    df_sites = gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg')
-    df_sites= df_sites[['counter', 'geometry', 'provider', 'geom_type']].reset_index(drop=True)
-
-    df_census= pd.read_pickle(data_folder+'census_oa_shapefiles.pkl')
-
-    # Intersect sites with Output Areas
-    df_sites_oa = intersect_sites_output_areas(df_sites, df_census)
-
-    df_ur= pd.read_pickle(data_folder+'urban_rural_oa.pkl')
-
-    # intersect updated census data with Census 2011 urban rural classification data
-    df_sites_oa_ur= intersect_sites_output_areas(df_sites_oa, df_ur)
-
-    # Add area column
-    df_sites_oa_ur['area_sq_km'] = add_area_column(df_sites_oa_ur)
-
-    # Save site info with raw census data
-    df_sites_oa_ur.to_pickle(data_folder+'test_sites_raw_census_features_with_counter_info.pkl')
-
-    df = df_sites_oa_ur
-    
-    
-    # groups census features into larger and more relevant caetgories e.g. 3+ people in household
-    grouped_census = engineer_features(df)
-    
-    # # Get proportion of features in each subset (e.g. proportion of 'Age group 0-25' in ['Age group 0-25','Age group 25-65'])
-    for cols in ftrs_sbset:   
-        grouped_census[cols]=get_proportion(grouped_census, cols)
-
-    grouped_census= grouped_census.groupby('counter').mean(numeric_only=True).reset_index()
-    # merge with counter info to get provider column for subsetting
-    grouped_census= grouped_census.merge(df_sites[['counter', 'provider', 'geometry', 'geom_type']], on='counter')
-    # save features as static training data. Other input features will be added to this static data set.
-    grouped_census.to_pickle(data_folder + 'test_sites_static_data.pkl')
-
-
-
 
 def main():
 

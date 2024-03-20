@@ -5,7 +5,6 @@ from model_packages import *
 from model_utils import *
 
 # constants
-scng_dist_pois = 5000  # Example scanning distance
 #load counter locations _data
 df_loc = gpd.read_file(data_folder+'counter_locations/counter_locations_processed.gpkg')
 
@@ -155,35 +154,6 @@ def get_pois(df_loc,fl_nam):
     all_sites_pois_df.to_pickle(data_folder+'{}_pois_df.pkl'.format(fl_nam))
 
     return all_sites_pois_df
-
-def process_test_sites_data():
-    df_loc= gpd.read_file(data_folder+'counter_locations/test_sites_counter_locations_processed.gpkg')
-
-    unique_providers = df_loc['provider'].unique()
-    all_provider_pois = []
-
-    for provider in unique_providers:
-        provider_pois = process_single_provider(df_loc, provider)
-        all_provider_pois.append(provider_pois)
-
-    # Combine all provider POIs into a single DataFrame
-    combined_pois = pd.concat(all_provider_pois).reset_index(drop=True)
-    # combined_pois= combined_pois.drop(['amenity_count', 'tourism_count', 'highway_count'], axis=1)
-    combined_pois= combined_pois.merge(df_loc[['area', 'counter']],on=['counter'],how='inner')
-    
-    num_cols=[x for x in combined_pois.columns if x not in ['area_sq_km','counter']]
-
-    # # Density of pois
-    combined_pois[num_cols]=combined_pois[num_cols].div(combined_pois['area'],axis=0)
-
-    del combined_pois['area']
-
-    # add new variables to static data set
-    static= pd.read_pickle(data_folder + 'test_sites_static_data.pkl')
-    static= pd.merge(combined_pois, static, on='counter', how='inner')
-    static.to_pickle(data_folder+'test_sites_static_data.pkl')
-
-
 
 def main():
 
