@@ -46,7 +46,7 @@ A file containing the name, latitude and longitude of all people counters from e
 A csv of people count data taken from automated sensors. Each column in the data set represents an individual people counter and each row represents a daily date. The values are the people counts for each day.
 
 ## Strava Data
-Strava Metro data was access through the Strava Metro Dashboard. Applications to access Strava Metro can be completed [here](https://metro.strava.com).
+Strava Metro data was access through the Strava Metro Dashboard. Applications to access Strava Metro can be completed [here](https://metro.strava.com). Strava Data is manually downloaded for the edge nearest to the location of each people counter.
 
 # Data Folder Structure
 The structure of the data folder is as follows. This folder structure is necessary to match the paths defined in modle_config.py. Any data sets required that do not have a specified folder should just be saved in the data folder
@@ -67,17 +67,19 @@ The size of this area is called the buffer zone and is defined in model_config.p
 
 In order to easily incoroporate new people counter locations into the code a config file is manually created, this config file 
 contains infromation relating to people counters data from each people counter provider.
-The information detailed is provider name (this is used as the dictionary key e.g."ne"), 
-"x-y-path" - the path to the location of the counter location data file (./data/counter_locations/<counter location file>)
-"pc_path" - the path to the location of the people counter data (./data/counter_data/<people counter data file>)
-"strava_path" - the path to the location of strava data for each people counter (./data/strava_data/<folder for each provider>/<folder for each edge>/<strava data files>)
+The information detailed is 
+* provider name (this is used as the dictionary key e.g."ne" for Natural England)  
+* "x-y-path" - the path to the location of the counter location data file (./data/counter_locations/\<counter location file>)  
+* "pc_path" - the path to the location of the people counter data (./data/counter_data/\<people counter data file\>)  
+* "strava_path" - the path to the location of strava data for each people counter (./data/strava_data/\<folder for each provider>/\<folder for each edge>/\<strava data files>)
+* "cut_off_year" - the earliest year that we have people counter data for.
 
 ![Config file ]("Screenshot of config file")
 
 By opening and running the code chunks contained in "compile_input_data.ipynb" the information given in the config file 
-ingested and then each of the "add_<data source name>.py" scripts are called to retrieve the data relevant to people counters
+ingested and then each of the "add_data source name.py" scripts are called to retrieve the data relevant to people counters
 and create the input data set required for the model. The output of the "compile_input_data.ipynb" notebook is a pickle file called 
-"static_and_dynamic_features_<buffer zone size>.pkl" where the buffer zone size used when collecting data is input into the filename. 
+"static_and_dynamic_features_\<buffer zone size>.pkl" where the buffer zone size used when collecting data is input into the filename. 
 
 # Model Training
 By running each code chunk in  "model_training.ipynb"  the output data set from "compile_input_data.ipynb" is used to train the 
@@ -87,5 +89,13 @@ ensemble regression model developed in phase one of this project. The outputs fr
 * voting_regressor_model.pkl - saved model after training.
 
 # Generating predictions for locations without people counter data 
-The model can also be used to create predictions for locations that we do not have people counter data for
+The model can also be used to create predictions for locations that we do not have people counter data for. A slight variation of the workflow must be used in this scenario due to the lack of people counter data. This process utilises the functions definied in the add_scripts and used to compile the input data set for the model along with a new config.json file relating to the new locations without people counter data.  
+
+1. Create  new counter location file. Retrieve  Strava Metro data from the edge closest to each people counter.
+2. Create a new config.json file that contains the information outlined above but does not contain the "pc_path" variable.
+3. Run the "compile_input_data_for_test_sites.ipynb". This will create the dataset to be used as the input for the model to make predictions.
+4. Run the "generate_predictions_for_test_sites.ipynb" This uses the data set created and generates a dataframe containing model predictions.
+
+
+ 
 
