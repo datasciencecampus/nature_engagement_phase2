@@ -74,7 +74,7 @@ The information detailed is
 * "strava_path" - the path to the location of strava data for each people counter (./data/strava_data/\<folder for each provider>/\<folder for each edge>/\<strava data files>)
 * "cut_off_year" - the earliest year that we have people counter data for.
 
-![Config file ]("Screenshot of config file")
+![Config file ](https://github.com/datasciencecampus/nature_engagement_phase2/blob/main/Screenshot%202024-03-15%20at%2015.09.34.png)
 
 By opening and running the code chunks contained in "compile_input_data.ipynb" the information given in the config file 
 ingested and then each of the "add_data source name.py" scripts are called to retrieve the data relevant to people counters
@@ -91,11 +91,7 @@ ensemble regression model developed in phase one of this project. The outputs fr
 # Generating predictions for locations without people counter data 
 The model can also be used to create predictions for locations that we do not have people counter data for. A slight variation of the workflow must be used in this scenario due to the lack of people counter data. This process utilises the functions definied in the add_scripts and used to compile the input data set for the model along with a new config.json file relating to the new locations without people counter data.  
 
-1. Create  new counter location file. Retrieve  Strava Metro data from the edge closest to each people counter.
+1. Create  new  location file containing x, y coordinates of points of interest. Retrieve  Strava Metro data from the edge closest to each point.
 2. Create a new config.json file that contains the information outlined above but does not contain the "pc_path" variable.
 3. Run the "compile_input_data_for_test_sites.ipynb". This will create the dataset to be used as the input for the model to make predictions.
 4. Run the "generate_predictions_for_test_sites.ipynb" This uses the data set created and generates a dataframe containing model predictions.
-
-
- 
-
