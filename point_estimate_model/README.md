@@ -1,7 +1,9 @@
 # Workflow 1 - Point estimate model of daily mean people count in each month of the year
 
 This document explains how to execute the code in order to compile the input data set, train the model and generate predictions.
-The data sets required and their structure will be outlined alongside step by step instructions on running the code.
+The data sets required and their structure will be outlined alongside step by step instructions on running the code. 
+
+For detailed technical information relating the the modelling approach taken in this analysis please refer to our [technical report](https://datasciencecampus.ons.gov.uk/projects/a-data-science-approach-to-estimate-the-use-of-natural-spaces-a-feasibility-study/) 
 
 # Input Data
 ## Census Data
@@ -87,6 +89,14 @@ ensemble regression model developed in phase one of this project. The outputs fr
 * training_predictions.pkl - data set containing input data and predictions of daily mean for each month of the year  for each people counter location in the training data set 
 * test_predictions.pkl - data set containing input data and predictions of daily mean for each month of the year  for each people counter location in the test data set
 * voting_regressor_model.pkl - saved model after training.
+
+The notebook uses the Pycaret Python package to train an ensemble regressor model that uses the predictions of five different regression models. 
+
+### Train Test Split
+The model training notebook also details the approach for splitting input data into training and test data sets in the training_test_split function. This is done first by carrying out K-Means clustering on the coordinates of each people counter to assign a cluster label to each counter location. This cluster label is then used to stratify the division of data when the data is split into training and testing data sets. This is done to ensure that the distribution of the locations of people counters is preserved in both training and test data sets. The function also provides an alternative option for the stratification of data splitting using the land_type lables assigned when compiling the input data, howevere during testing this had a negative impact on model performance.
+
+### Feature Selection
+Also included in the model_training notebook is a function to select the final features to include in the model, this is done using Variance Inflation Factor(VIF). VIF is used to remove features with signigicant collinearity from the model. If not removed this multicollinearity can have negative impacts on model performance and interpretation. The VIF function in the notebook carries out VIF and sequentially removes the feature with the highest VIF score untill all features have a VIF score of less than 10 (lowe VIF score indicates less multicollinearity).
 
 # Generating predictions for locations without people counter data 
 The model can also be used to create predictions for locations that we do not have people counter data for. A slight variation of the workflow must be used in this scenario due to the lack of people counter data. This process utilises the functions definied in the add_scripts and used to compile the input data set for the model along with a new config.json file relating to the new locations without people counter data.  
