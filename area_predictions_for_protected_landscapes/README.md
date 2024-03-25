@@ -10,7 +10,7 @@ This worfklow details the steps needed to make predictions for larger geographic
 
 # Input Data
 
-## static_and_dynamic_features_<\buffer_zone>.pkl, the output from 'point_estimate_model/compile_input_data.ipynb'
+## static_and_dynamic_features_<buffer_zone>.pkl, the output from 'point_estimate_model/compile_input_data.ipynb'
 This data set is used to select people counters that have passed data quality assessment during the process to compile the input data for the point estimate model. This provides the location of the people counters and  the people counter data.  
 
 ## Census Data
