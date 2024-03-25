@@ -1,6 +1,5 @@
 # Workflow 2- Area Predictions for Protected Landscapes
-This worfklow details the steps needed to make predictions for larger geographic areas as opposed to the point 
-estimates outlined in Workflow 1. The worfklow comprises of:
+This worfklow details the steps needed to make predictions for larger geographic areas as opposed to the point estimates outlined in Workflow 1. The worfklow is carried out in Visitors_protected_landscapes.ipynb and comprises of:
 
 1. Identifying areas of overlap between the protected landscapes and the location of people counters
 2. Clustering the protected landscapes based on socio-demographic features, 
@@ -44,3 +43,7 @@ data/
 ├── regions/
 └──strava_data/<\data for each edge 
 </pre>
+
+# Requirements File
+A requirements text file is provided to allow easy recreation of the environtment used for this analysis.
+
